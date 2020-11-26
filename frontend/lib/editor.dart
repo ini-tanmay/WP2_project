@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:frontend/drafts.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/rich_text_editor.dart';
 
 class EditorPage extends StatelessWidget {
   @override
@@ -21,7 +21,7 @@ class EditorPage extends StatelessWidget {
         middle: Text('Edit Draft'),
       ),
       body: Center(
-        child: Text('Hey'),
+        child: RichTextEditWidget(),
       ),
     );
   }
