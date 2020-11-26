@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/drafts.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import 'editor.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -11,7 +13,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
+    return MaterialApp(
         debugShowCheckedModeBanner: false,
         builder: (context, widget) => ResponsiveWrapper.builder(
               BouncingScrollWrapper.builder(context, widget),
@@ -26,15 +28,15 @@ class MyApp extends StatelessWidget {
                 ResponsiveBreakpoint.autoScale(2460, name: "4K"),
               ],
             ),
-        home: RegisterUser());
+        home: AuthPage());
   }
 }
 
-class RegisterUser extends StatefulWidget {
-  RegisterUserState createState() => RegisterUserState();
+class AuthPage extends StatefulWidget {
+  AuthPageState createState() => AuthPageState();
 }
 
-class RegisterUserState extends State {
+class AuthPageState extends State {
   // Boolean variable for CircularProgressIndicator.
   bool visible = false;
 
@@ -86,11 +88,11 @@ class RegisterUserState extends State {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
+    return Scaffold(
+        appBar: CupertinoNavigationBar(
           middle: Text('TextEdit'),
         ),
-        child: Center(
+        body: Center(
           child: Column(
             children: <Widget>[
               Padding(
@@ -123,7 +125,7 @@ class RegisterUserState extends State {
               RaisedButton(
                 onPressed: () {
                   Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) => DraftsPage()));
+                      CupertinoPageRoute(builder: (context) => EditorPage()));
                 },
                 color: Colors.green,
                 textColor: Colors.white,

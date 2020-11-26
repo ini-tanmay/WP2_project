@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/editor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -11,11 +12,11 @@ class DraftsPage extends StatefulWidget {
 class _DraftsPageState extends State<DraftsPage> {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
+    return Scaffold(
+        appBar: CupertinoNavigationBar(
           middle: Text('Drafts'),
         ),
-        child: SafeArea(
+        body: SafeArea(
           child: Center(
             child: GridView.builder(
               itemCount: 3,
@@ -35,7 +36,7 @@ class _DraftsPageState extends State<DraftsPage> {
 Widget buildCard(BuildContext context) {
   return GestureDetector(
     onTap: () => Navigator.push(
-        context, CupertinoPageRoute(builder: (context) => DraftsPage())),
+        context, CupertinoPageRoute(builder: (context) => EditorPage())),
     child: Material(
       elevation: 6,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
