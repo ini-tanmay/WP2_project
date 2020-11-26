@@ -2,28 +2,54 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/drafts.dart';
 import 'package:frontend/main.dart';
-import 'package:frontend/rich_text_editor.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:text_editor/text_editor.dart';
 
-class EditorPage extends StatelessWidget {
+class EditorPage extends StatefulWidget {
+  @override
+  _EditorPageState createState() => _EditorPageState();
+}
+
+class _EditorPageState extends State<EditorPage> {
+  TextStyle _textStyle = GoogleFonts.bilbo(fontSize: 33);
+
+  String _text = 'Sample Text';
+
+  TextAlign _textAlign = TextAlign.center;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: buildDrawer(context),
-      appBar: CupertinoNavigationBar(
-        leading: Builder(
-          builder: (newContext) => CupertinoButton(
-            onPressed: () {
-              Scaffold.of(newContext).openDrawer();
-            },
-            child: Icon(Icons.menu),
+        drawer: buildDrawer(context),
+        appBar: CupertinoNavigationBar(
+          leading: Builder(
+            builder: (newContext) => CupertinoButton(
+              onPressed: () {
+                Scaffold.of(newContext).openDrawer();
+              },
+              child: Icon(Icons.menu),
+            ),
           ),
+          middle: Text('Edit Draft'),
         ),
-        middle: Text('Edit Draft'),
-      ),
-      body: Center(
-        child: RichTextEditWidget(),
-      ),
-    );
+        body: Center(
+            child: Container(
+          color: Colors.red,
+          child: TextEditor(
+            fonts: ['Billabong'],
+            text: _text,
+            textStyle: _textStyle,
+            textAlingment: _textAlign,
+            onEditCompleted: (style, align, text) {
+              setState(() {
+                _text = text;
+                _textStyle = style;
+                _textAlign = align;
+              });
+              Navigator.pop(context);
+            },
+          ),
+        )));
   }
 
   Widget buildDrawer(context) {
