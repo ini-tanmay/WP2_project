@@ -14,14 +14,28 @@ if ($conn->connect_error) {
 } 
 echo "Connected successfully";
 
-if(count($_POST)>0) {
-	$conn = mysqli_connect("localhost","root","","phppot_examples");
-	$result = mysqli_query($conn,"SELECT * FROM users WHERE user_name='" . $_POST["userName"] . "' and password = '". $_POST["password"]."'");
-	$count  = mysqli_num_rows($result);
-	if($count==0) {
-		$message = "Invalid Username or Password!";
-	} else {
-		$message = "You are successfully authenticated!";
-	}
-} 
+$json = file_get_contents('php://input');
+ 
+ $obj = json_decode($json,true);
+ $email = $obj['email'];
+ $password = $obj['password'];
+ $loginQuery = "select * from app_users where email = '$email' and password = '$password' ";
+ 
+ $check = mysqli_fetch_array(mysqli_query($conn,$loginQuery));
+ 
+	if(isset($check)){
+		
+		 $onLoginSuccess = 'Logged in...redirecting..';
+		 $SuccessMSG = json_encode($onLoginSuccess);
+		 echo $SuccessMSG ; 
+	 
+	 }
+	 
+	 else{
+		$InvalidMSG = 'Invalid Username or Password' ;
+		$InvalidMSGJSon = json_encode($InvalidMSG);
+		 echo $InvalidMSGJSon ;
+	 }
+ 
+
 ?>

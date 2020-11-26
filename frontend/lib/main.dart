@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/drafts.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
@@ -9,7 +11,8 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
+        debugShowCheckedModeBanner: false,
         builder: (context, widget) => ResponsiveWrapper.builder(
               BouncingScrollWrapper.builder(context, widget),
               maxWidth: 1200,
@@ -53,26 +56,16 @@ class RegisterUserState extends State {
     String email = emailController.text;
     String password = passwordController.text;
 
-    // SERVER API URL
-    var url = 'https://flutter-examples.000webhostapp.com/register_user.php';
-
-    // Store all data with Param Name.
+    var url = 'http://localhost:8080/WP2_project/auth.php';
     var data = {'name': name, 'email': email, 'password': password};
-
-    // Starting Web API Call.
     var response = await http.post(url, body: json.encode(data));
-
-    // Getting Server response into variable.
     var message = jsonDecode(response.body);
-
-    // If Web call Success than Hide the CircularProgressIndicator.
     if (response.statusCode == 200) {
       setState(() {
         visible = false;
       });
     }
 
-    // Showing Alert Dialog with Response JSON Message.
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -93,62 +86,57 @@ class RegisterUserState extends State {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-        'TextEdit'
+    return CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          middle: Text('TextEdit'),
         ),
-      ),
-        body: Center(
-      child: Column(
-        children: <Widget>[
-          Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text('User Registration Form',
-                  style: TextStyle(fontSize: 21))),
-          Divider(),
-          Container(
-              width: 280,
-              padding: EdgeInsets.all(10.0),
-              child: TextField(
-                controller: nameController,
-                autocorrect: true,
-                decoration: InputDecoration(hintText: 'Enter Your Name Here'),
-              )),
-          Container(
-              width: 280,
-              padding: EdgeInsets.all(10.0),
-              child: TextField(
-                controller: emailController,
-                autocorrect: true,
-                decoration: InputDecoration(hintText: 'Enter Your Email Here'),
-              )),
-          Container(
-              width: 280,
-              padding: EdgeInsets.all(10.0),
-              child: TextField(
-                controller: passwordController,
-                autocorrect: true,
-                obscureText: true,
-                decoration:
-                    InputDecoration(hintText: 'Enter Your Password Here'),
-              )),
-          RaisedButton(
-            onPressed: (){
-              
-            },
-            color: Colors.green,
-            textColor: Colors.white,
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Text('Click Here To Register User Online'),
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text('User Registration Form',
+                      style: TextStyle(fontSize: 21))),
+              Divider(),
+              Container(
+                  width: 280,
+                  padding: EdgeInsets.all(10.0),
+                  child: CupertinoTextField(
+                      controller: nameController,
+                      autocorrect: true,
+                      placeholder: 'Name')),
+              Container(
+                  width: 280,
+                  padding: EdgeInsets.all(10.0),
+                  child: CupertinoTextField(
+                      controller: emailController,
+                      autocorrect: true,
+                      placeholder: 'Enter Your Email Here')),
+              Container(
+                  width: 280,
+                  padding: EdgeInsets.all(10.0),
+                  child: CupertinoTextField(
+                      controller: passwordController,
+                      autocorrect: true,
+                      obscureText: true,
+                      placeholder: 'Password')),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => DraftsPage()));
+                },
+                color: Colors.green,
+                textColor: Colors.white,
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: Text('Sign Up'),
+              ),
+              Visibility(
+                  visible: visible,
+                  child: Container(
+                      margin: EdgeInsets.only(bottom: 30),
+                      child: CircularProgressIndicator())),
+            ],
           ),
-          Visibility(
-              visible: visible,
-              child: Container(
-                  margin: EdgeInsets.only(bottom: 30),
-                  child: CircularProgressIndicator())),
-        ],
-      ),
-    ));
+        ));
   }
 }
