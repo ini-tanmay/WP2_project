@@ -15,7 +15,6 @@ class Draft {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'userID': userID,
       'text': text,
       'title': title,
@@ -26,10 +25,10 @@ class Draft {
   factory Draft.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     return Draft(
-      id: map['id'],
+      id: map['_id'],
       userID: map['userID'],
       title: map['title'],
-      text: map['text'] ?? 'text',
+      text: map['text'],
       timeStamp: map['timeStamp'] == null
           ? DateTime.now()
           : DateTime.fromMillisecondsSinceEpoch(map['timeStamp']),

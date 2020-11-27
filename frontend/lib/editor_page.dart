@@ -23,7 +23,7 @@ class _EditorPageState extends State<EditorPage> {
 
   addDraftToDb() async {
     Draft draft = Draft(
-        userID: widget.draft.userID,
+        userID: widget.userEmail,
         text: _text,
         timeStamp: DateTime.now(),
         title: title);
@@ -141,8 +141,10 @@ class _EditorPageState extends State<EditorPage> {
           ListTile(
             title: Text('Drafts'),
             leading: Icon(Icons.attach_file),
-            onTap: () => Navigator.push(context,
-                CupertinoPageRoute(builder: (context) => DraftsPage())),
+            onTap: () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                    builder: (context) => DraftsPage(widget.userEmail))),
           ),
           ListTile(
             title: Text('Log out'),

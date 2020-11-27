@@ -12,10 +12,10 @@ $uid = $obj['userID'];
 
 //insert new user
 $document=array(
-   "text"=>$name,
+   "text"=>$text,
    "userID"=>$uid,
-   "timeStamp"=>$email,
-   "password"=>$password
+   "timeStamp"=>$timeStamp,
+   "title"=>$title
 );
 $insert_data->insert($document);
 $insertResult=$client->executeBulkWrite('wp.drafts',$insert_data);	

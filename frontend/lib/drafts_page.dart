@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,15 +6,32 @@ import 'package:frontend/draft.dart';
 import 'package:frontend/editor_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class DraftsPage extends StatefulWidget {
-  DraftsPage({this.userEmail});
+  DraftsPage(this.userEmail);
   final String userEmail;
   @override
   _DraftsPageState createState() => _DraftsPageState();
 }
 
 class _DraftsPageState extends State<DraftsPage> {
+  Future<List<Draft>> getDrafts() async {
+    List<Draft> drafts = [];
+    http.Response response = await http.post(
+        'http://localhost:8080/WP2_project/get_drafts.php',
+        body: jsonEncode({'userID': widget.userEmail}));
+    if (response.statusCode == 200) {
+      print(response.body);
+      List<dynamic> list = jsonDecode(response.body);
+      for (var draft in list) {
+        drafts.add(Draft.fromMap(draft));
+      }
+      return drafts;
+    }
+    return [];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,12 +43,13 @@ class _DraftsPageState extends State<DraftsPage> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: FutureBuilder<List<Draft>>(
+                future: getDrafts(),
                 builder: (context, snap) {
                   if (!snap.hasData) return CircularProgressIndicator();
                   List<Draft> drafts = snap.data;
                   if (drafts.isEmpty)
                     return Center(
-                      child: Text('No drafts'),
+                      child: Text('No drafts to show'),
                     );
                   return GridView.builder(
                     itemCount: drafts.length,
@@ -54,7 +73,10 @@ class _DraftsPageState extends State<DraftsPage> {
       onTap: () => Navigator.push(
           context,
           CupertinoPageRoute(
-              builder: (context) => EditorPage(widget.userEmail))),
+              builder: (context) => EditorPage(
+                    widget.userEmail,
+                    draft: draft,
+                  ))),
       child: Material(
         elevation: 6,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
