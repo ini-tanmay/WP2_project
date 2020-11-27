@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/editor.dart';
+import 'package:frontend/editor_page.dart';
 import 'package:frontend/register_page.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,37 +21,37 @@ class LoginPageState extends State {
     });
     String email = emailController.text;
     String password = passwordController.text;
-    var url = 'http://localhost:8080/WP2_project/login_mongo.php';
+    var url = 'http://localhost:8080/WP2_project/login.php';
     var data = {'email': email, 'password': password};
     var response = await http.post(url, body: json.encode(data));
     var message = jsonDecode(response.body);
-    if (message) {
+    if (response.statusCode == 200) {
       setState(() {
         isBusy = false;
       });
-      Navigator.push(
-          context, CupertinoPageRoute(builder: (context) => EditorPage()));
-    } else {
-      setState(() {
-        isBusy = false;
-      });
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: new Text(message),
-            actions: <Widget>[
-              FlatButton(
-                child: new Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+      if (!message) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: new Text('Authentication Failed'),
+              content: Text(
+                  'Please check if your email address and/or password are correct'),
+              actions: <Widget>[
+                FlatButton(
+                  child: new Text("Confirm"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+      return message;
     }
+    return false;
   }
 
   @override
@@ -84,11 +84,16 @@ class LoginPageState extends State {
                     InputDecoration(hintText: 'Enter Your Password Here'),
               )),
           RaisedButton(
-            onPressed: userLogin,
+            onPressed: () async {
+              var isValid = await userLogin();
+              if (isValid)
+                Navigator.push(context,
+                    CupertinoPageRoute(builder: (context) => EditorPage()));
+            },
             color: Colors.green,
             textColor: Colors.white,
             padding: EdgeInsets.fromLTRB(9, 9, 9, 9),
-            child: Text('Click Here To Login'),
+            child: Text('Sign In'),
           ),
           CupertinoButton(
               onPressed: () {

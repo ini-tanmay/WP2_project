@@ -2,7 +2,6 @@
  header("Access-Control-Allow-Origin: *");// to enable CORS for flutter web support
 
 $client = new MongoDB\Driver\Manager("mongodb://localhost:27017");
-// $db = $m->mydb;
 $insert_data= new MongoDB\Driver\BulkWrite;
 $json = file_get_contents('php://input');
 $obj = json_decode($json,true);

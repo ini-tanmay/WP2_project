@@ -1,5 +1,8 @@
 
 <?php
+
+ header("Access-Control-Allow-Origin: *");// to enable CORS for flutter web support
+
 $client = new MongoDB\Driver\Manager("mongodb://localhost:27017");
 
 $json = file_get_contents('php://input');

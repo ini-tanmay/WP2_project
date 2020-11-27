@@ -1,22 +1,45 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/drafts.dart';
+import 'package:frontend/draft.dart';
+import 'package:frontend/drafts_page.dart';
 import 'package:frontend/login_page.dart';
-import 'package:frontend/main.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:markdown_editable_textinput/markdown_text_input.dart';
 import 'package:markdown_widget/markdown_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 class EditorPage extends StatefulWidget {
+  EditorPage({this.draft});
+  final Draft draft;
   @override
   _EditorPageState createState() => _EditorPageState();
 }
 
 class _EditorPageState extends State<EditorPage> {
   String _text = 'Sample Text';
+  String title = DateTime.now().toIso8601String();
 
-  addTextToDb() {}
+  addDraftToDb() async {
+    Draft draft = Draft(
+        userID: widget.draft.userID,
+        text: _text,
+        timeStamp: DateTime.now(),
+        title: title);
+
+    await http.post('http://localhost:8080/WP2_project/add_draft.php',
+        body: json.encode(draft.toMap()));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.draft != null) {
+      _text = widget.draft.text;
+      title = widget.draft.title;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +57,12 @@ class _EditorPageState extends State<EditorPage> {
                 child: Icon(Icons.menu),
               ),
             ),
-            middle: Text('Edit Draft'),
+            middle: Text('Edit Draft -' + title),
             trailing: CupertinoButton(
               child: Icon(Icons.save),
-              onPressed: () {},
+              onPressed: () async {
+                await addDraftToDb();
+              },
             ),
           ),
           body: Center(
@@ -124,6 +149,41 @@ class _EditorPageState extends State<EditorPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<String> showTextInputDialog() async {
+    return await showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text('Change title'),
+        content: Material(
+          child: TextFormField(
+            maxLength: 110,
+            initialValue: title,
+            onChanged: (val) {
+              title = val;
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+            ),
+            maxLines: null,
+            textInputAction: TextInputAction.newline,
+            keyboardType: TextInputType.multiline,
+          ),
+        ),
+        actions: [
+          FlatButton(
+            child: Text('Done'),
+            onPressed: () {
+              Navigator.of(context).pop(title);
+            },
+          )
+        ],
+      ),
+      barrierDismissible: false,
     );
   }
 }

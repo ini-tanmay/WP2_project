@@ -2,9 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/login_page.dart';
 import 'package:http/http.dart' as http;
-import 'editor.dart';
+import 'editor_page.dart';
 import 'dart:convert';
-import 'dart:developer' as dev;
 
 class RegisterPage extends StatefulWidget {
   RegisterPageState createState() => RegisterPageState();
@@ -26,12 +25,10 @@ class RegisterPageState extends State {
     String name = nameController.text;
     String email = emailController.text;
     String password = passwordController.text;
-    var url = 'http://localhost:8080/WP2_project/register_mongo.php';
+    var url = 'http://localhost:8080/WP2_project/register.php';
     var data = {'name': name, 'email': email, 'password': password};
     http.Response response = await http.post(url, body: json.encode(data));
     var message = jsonDecode(response.body);
-    dev.log(message.toString() + 'neyyyyyyyyyyyyyyyyyyyyyyy');
-    dev.log(response.statusCode.toString());
     if (response.statusCode == 200) {
       setState(() {
         isBusy = false;
@@ -56,7 +53,7 @@ class RegisterPageState extends State {
           },
         );
       }
-      return true;
+      return message;
     }
     return false;
   }
