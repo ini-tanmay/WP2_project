@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/drafts.dart';
+import 'package:frontend/login_page.dart';
 import 'package:frontend/main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:markdown_editable_textinput/markdown_text_input.dart';
@@ -16,6 +17,8 @@ class _EditorPageState extends State<EditorPage> {
   TextStyle _textStyle = GoogleFonts.bilbo(fontSize: 33);
   String _text = 'Sample Text';
   TextAlign _textAlign = TextAlign.center;
+
+  addTextToDb() {}
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +120,7 @@ class _EditorPageState extends State<EditorPage> {
             title: Text('Log out'),
             leading: Icon(Icons.logout),
             onTap: () => Navigator.push(
-                context, CupertinoPageRoute(builder: (context) => AuthPage())),
+                context, CupertinoPageRoute(builder: (context) => LoginPage())),
           ),
         ],
       ),
