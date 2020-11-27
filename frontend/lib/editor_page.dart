@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/draft.dart';
@@ -11,8 +10,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
 class EditorPage extends StatefulWidget {
-  EditorPage({this.draft});
+  EditorPage(this.userEmail, {this.draft});
   final Draft draft;
+  final String userEmail;
   @override
   _EditorPageState createState() => _EditorPageState();
 }
@@ -57,10 +57,11 @@ class _EditorPageState extends State<EditorPage> {
                 child: Icon(Icons.menu),
               ),
             ),
-            middle: Text('Edit Draft -' + title),
+            middle: Text('Edit Draft - ' + title),
             trailing: CupertinoButton(
               child: Icon(Icons.save),
               onPressed: () async {
+                await showTextInputDialog();
                 await addDraftToDb();
               },
             ),
@@ -126,14 +127,16 @@ class _EditorPageState extends State<EditorPage> {
       child: ListView(
         children: [
           UserAccountsDrawerHeader(
-            accountEmail: Text('email'),
-            accountName: Text('name'),
+            accountName: Text(''),
+            accountEmail: Text(widget.userEmail),
           ),
           ListTile(
             title: Text('Editor'),
             leading: Icon(Icons.edit),
-            onTap: () => Navigator.push(context,
-                CupertinoPageRoute(builder: (context) => EditorPage())),
+            onTap: () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                    builder: (context) => EditorPage(widget.userEmail))),
           ),
           ListTile(
             title: Text('Drafts'),

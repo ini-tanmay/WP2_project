@@ -10,10 +10,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class RegisterPageState extends State {
-  // Boolean variable for CircularProgressIndicator.
   bool isBusy = false;
-
-  // Getting value from TextField widget.
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -58,6 +55,7 @@ class RegisterPageState extends State {
     return false;
   }
 
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,62 +63,88 @@ class RegisterPageState extends State {
           middle: Text('TextEdit'),
         ),
         body: Center(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text('User Registration Form',
-                      style: TextStyle(fontSize: 21))),
-              Divider(),
-              Container(
-                  width: 280,
-                  padding: EdgeInsets.all(10.0),
-                  child: CupertinoTextField(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text('User Registration Form',
+                        style: TextStyle(fontSize: 21))),
+                Divider(),
+                Container(
+                    width: 280,
+                    padding: EdgeInsets.all(10.0),
+                    child: TextFormField(
+                      validator: (val) {
+                        if (val.isEmpty) return 'Name cannot be empty';
+                        return null;
+                      },
                       controller: nameController,
                       autocorrect: false,
                       autofillHints: [AutofillHints.name],
-                      placeholder: 'Name')),
-              Container(
-                  width: 280,
-                  padding: EdgeInsets.all(10.0),
-                  child: CupertinoTextField(
+                      decoration: InputDecoration(hintText: 'Name'),
+                    )),
+                Container(
+                    width: 280,
+                    padding: EdgeInsets.all(10.0),
+                    child: TextFormField(
+                      validator: (val) {
+                        if (val.isEmpty) return 'Enter a valid email';
+                        return null;
+                      },
                       controller: emailController,
                       autofillHints: [AutofillHints.email],
                       autocorrect: false,
-                      placeholder: 'Enter Your Email Here')),
-              Container(
-                  width: 280,
-                  padding: EdgeInsets.all(10.0),
-                  child: CupertinoTextField(
+                      decoration: InputDecoration(hintText: 'Email'),
+                    )),
+                Container(
+                    width: 280,
+                    padding: EdgeInsets.all(10.0),
+                    child: TextFormField(
+                      validator: (val) {
+                        if (val.length < 8)
+                          return 'Password must be at least 8 characters long';
+                        return null;
+                      },
                       controller: passwordController,
                       autocorrect: false,
                       autofillHints: [AutofillHints.password],
                       obscureText: true,
-                      placeholder: 'Password')),
-              RaisedButton(
-                onPressed: () async {
-                  var isValid = await userRegistration();
-                  if (isValid)
-                    Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) => EditorPage()));
-                },
-                color: Colors.green,
-                textColor: Colors.white,
-                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                child: Text('Sign Up'),
-              ),
-              CupertinoButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) => LoginPage()));
+                      decoration: InputDecoration(hintText: 'Password'),
+                    )),
+                RaisedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      var isValid = await userRegistration();
+                      if (isValid)
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) =>
+                                    EditorPage(emailController.text.trim())));
+                    }
                   },
-                  child: Text('Got an account already?')),
-              Visibility(
-                  visible: isBusy,
-                  child: Container(
-                      margin: EdgeInsets.only(bottom: 30),
-                      child: CircularProgressIndicator())),
-            ],
+                  color: Colors.green,
+                  textColor: Colors.white,
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: Text('Sign Up'),
+                ),
+                CupertinoButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => LoginPage()));
+                    },
+                    child: Text('Got an account already?')),
+                Visibility(
+                    visible: isBusy,
+                    child: Container(
+                        margin: EdgeInsets.only(bottom: 30),
+                        child: CircularProgressIndicator())),
+              ],
+            ),
           ),
         ));
   }

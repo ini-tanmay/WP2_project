@@ -8,10 +8,12 @@ $obj = json_decode($json,true);
 $text = $obj['text'];
 $title = $obj['title'];
 $timeStamp = $obj['timeStamp'];
+$uid = $obj['userID'];
 
 //insert new user
 $document=array(
    "text"=>$name,
+   "userID"=>$uid,
    "timeStamp"=>$email,
    "password"=>$password
 );

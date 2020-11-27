@@ -54,59 +54,76 @@ class LoginPageState extends State {
     return false;
   }
 
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
             child: Center(
-      child: Column(
-        children: <Widget>[
-          Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text('User Login Form', style: TextStyle(fontSize: 21))),
-          Divider(),
-          Container(
-              width: 280,
-              padding: EdgeInsets.all(10.0),
-              child: TextField(
-                controller: emailController,
-                autocorrect: true,
-                decoration: InputDecoration(hintText: 'Enter Your Email Here'),
-              )),
-          Container(
-              width: 280,
-              padding: EdgeInsets.all(10.0),
-              child: TextField(
-                controller: passwordController,
-                autocorrect: true,
-                obscureText: true,
-                decoration:
-                    InputDecoration(hintText: 'Enter Your Password Here'),
-              )),
-          RaisedButton(
-            onPressed: () async {
-              var isValid = await userLogin();
-              if (isValid)
-                Navigator.push(context,
-                    CupertinoPageRoute(builder: (context) => EditorPage()));
-            },
-            color: Colors.green,
-            textColor: Colors.white,
-            padding: EdgeInsets.fromLTRB(9, 9, 9, 9),
-            child: Text('Sign In'),
-          ),
-          CupertinoButton(
-              onPressed: () {
-                Navigator.push(context,
-                    CupertinoPageRoute(builder: (context) => RegisterPage()));
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Text('User Login Form', style: TextStyle(fontSize: 21))),
+            Divider(),
+            Container(
+                width: 280,
+                padding: EdgeInsets.all(10.0),
+                child: TextFormField(
+                  validator: (val) {
+                    if (val.isEmpty) return 'Enter a valid email';
+                    return null;
+                  },
+                  controller: emailController,
+                  autocorrect: true,
+                  decoration:
+                      InputDecoration(hintText: 'Enter Your Email Here'),
+                )),
+            Container(
+                width: 280,
+                padding: EdgeInsets.all(10.0),
+                child: TextFormField(
+                  validator: (val) {
+                    if (val.length < 8)
+                      return 'Password must be at least 8 characters long';
+                    return null;
+                  },
+                  controller: passwordController,
+                  autocorrect: true,
+                  obscureText: true,
+                  decoration:
+                      InputDecoration(hintText: 'Enter Your Password Here'),
+                )),
+            RaisedButton(
+              onPressed: () async {
+                var isValid = await userLogin();
+                if (isValid)
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) =>
+                              EditorPage(emailController.text.trim())));
               },
-              child: Text('Create an account')),
-          Visibility(
-              visible: isBusy,
-              child: Container(
-                  margin: EdgeInsets.only(bottom: 30),
-                  child: CircularProgressIndicator())),
-        ],
+              color: Colors.green,
+              textColor: Colors.white,
+              padding: EdgeInsets.fromLTRB(9, 9, 9, 9),
+              child: Text('Sign In'),
+            ),
+            CupertinoButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => RegisterPage()));
+                },
+                child: Text('Create an account')),
+            Visibility(
+                visible: isBusy,
+                child: Container(
+                    margin: EdgeInsets.only(bottom: 30),
+                    child: CircularProgressIndicator())),
+          ],
+        ),
       ),
     )));
   }
