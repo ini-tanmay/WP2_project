@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:frontend/drafts.dart';
 import 'package:frontend/main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:text_editor/text_editor.dart';
+import 'package:markdown_editable_textinput/markdown_text_input.dart';
+import 'package:markdown_widget/markdown_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EditorPage extends StatefulWidget {
   @override
@@ -12,48 +14,87 @@ class EditorPage extends StatefulWidget {
 
 class _EditorPageState extends State<EditorPage> {
   TextStyle _textStyle = GoogleFonts.bilbo(fontSize: 33);
-
   String _text = 'Sample Text';
-
   TextAlign _textAlign = TextAlign.center;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: buildDrawer(context),
-        appBar: CupertinoNavigationBar(
-          leading: Builder(
-            builder: (newContext) => CupertinoButton(
-              onPressed: () {
-                Scaffold.of(newContext).openDrawer();
-              },
-              child: Icon(Icons.menu),
+    return DefaultTabController(
+      initialIndex: 0,
+      length: 2,
+      child: Scaffold(
+          drawer: buildDrawer(context),
+          appBar: CupertinoNavigationBar(
+            leading: Builder(
+              builder: (newContext) => CupertinoButton(
+                onPressed: () {
+                  Scaffold.of(newContext).openDrawer();
+                },
+                child: Icon(Icons.menu),
+              ),
             ),
+            middle: Text('Edit Draft'),
+            trailing: Row(children: [
+              IconButton(
+                icon: Icon(Icons.save),
+                onPressed: () {},
+              ),
+            ]),
           ),
-          middle: Text('Edit Draft'),
-        ),
-        body: Center(
-            child: Container(
-          color: Colors.red,
-          child: TextEditor(
-            fonts: ['Billabong'],
-            text: _text,
-            textStyle: _textStyle,
-            textAlingment: _textAlign,
-            onEditCompleted: (style, align, text) {
-              setState(() {
-                _text = text;
-                _textStyle = style;
-                _textAlign = align;
-              });
-              Navigator.pop(context);
-            },
-          ),
-        )));
+          body: Center(
+              child: Column(
+            children: [
+              TabBar(
+                labelColor: Colors.amber,
+                unselectedLabelColor: Colors.grey,
+                tabs: [
+                  Tab(
+                    text: 'Edit',
+                    icon: Icon(Icons.edit),
+                  ),
+                  Tab(
+                    text: 'Preview',
+                    icon: Icon(CupertinoIcons.eye),
+                  )
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    SingleChildScrollView(
+                      child: MarkdownTextInput((val) {
+                        setState(() {
+                          _text = val;
+                          print(val);
+                        });
+                      }, _text),
+                    ),
+                    MarkdownWidget(
+                        data: _text.replaceAll('<br>', '\n'),
+                        loadingWidget:
+                            Center(child: Text('Enter in some text!')),
+                        styleConfig: StyleConfig(
+                          pConfig: PConfig(
+                              onLinkTap: (val) async {
+                                if (await canLaunch(val))
+                                  await launch(
+                                    val,
+                                    forceSafariVC: false,
+                                  );
+                              },
+                              textStyle: Theme.of(context).textTheme.headline5),
+                        ))
+                  ],
+                ),
+              ),
+            ],
+          ))),
+    );
   }
 
   Widget buildDrawer(context) {
     return Drawer(
+      elevation: 0,
       child: ListView(
         children: [
           UserAccountsDrawerHeader(

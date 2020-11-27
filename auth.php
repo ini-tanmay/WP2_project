@@ -12,6 +12,7 @@ $conn = new mysqli($servername, $username, $password,$databasename);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
 echo "Connected successfully";
 
 $json = file_get_contents('php://input');
@@ -28,7 +29,6 @@ $json = file_get_contents('php://input');
 		 $onLoginSuccess = 'Logged in...redirecting..';
 		 $SuccessMSG = json_encode($onLoginSuccess);
 		 echo $SuccessMSG ; 
-	 
 	 }
 	 
 	 else{
