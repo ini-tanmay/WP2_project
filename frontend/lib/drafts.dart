@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/draft.dart';
 import 'package:frontend/editor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -18,22 +20,35 @@ class _DraftsPageState extends State<DraftsPage> {
         ),
         body: SafeArea(
           child: Center(
-            child: GridView.builder(
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return buildCard(context);
-              },
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: 2 / 3,
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 100),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: FutureBuilder<List<Draft>>(
+                builder: (context, snap) {
+                  if (!snap.hasData) return CircularProgressIndicator();
+                  List<Draft> drafts = snap.data;
+                  if (drafts.isEmpty)
+                    return Center(
+                      child: Text('No drafts'),
+                    );
+                  return GridView.builder(
+                    itemCount: drafts.length,
+                    itemBuilder: (context, index) {
+                      return buildCard(context, drafts[index]);
+                    },
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 2 / 3,
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 100),
+                  );
+                },
+              ),
             ),
           ),
         ));
   }
 }
 
-Widget buildCard(BuildContext context) {
+Widget buildCard(BuildContext context, Draft draft) {
   return GestureDetector(
     onTap: () => Navigator.push(
         context, CupertinoPageRoute(builder: (context) => EditorPage())),
@@ -53,7 +68,7 @@ Widget buildCard(BuildContext context) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'title',
+                    draft.text.substring(0, min(12, draft.text.length)),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
@@ -62,7 +77,7 @@ Widget buildCard(BuildContext context) {
                     height: 20,
                   ),
                   Text(
-                    'lorem',
+                    draft.text,
                     style: GoogleFonts.montserrat(fontSize: 22),
                     maxLines: 5,
                     overflow: TextOverflow.ellipsis,
@@ -72,7 +87,7 @@ Widget buildCard(BuildContext context) {
                   ),
                   Text(
                     DateFormat('E, d MMM yyyy h:mm a')
-                        .format(DateTime.now())
+                        .format(draft.timeStamp)
                         .toString(),
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
                     maxLines: 1,

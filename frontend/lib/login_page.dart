@@ -11,10 +11,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State {
-  // For CircularProgressIndicator.
   bool isBusy = false;
-
-  // Getting value from TextField widget.
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -22,15 +19,13 @@ class LoginPageState extends State {
     setState(() {
       isBusy = true;
     });
-
     String email = emailController.text;
     String password = passwordController.text;
-
-    var url = 'http://localhost:8080/WP2_project/register.php';
+    var url = 'http://localhost:8080/WP2_project/login_mongo.php';
     var data = {'email': email, 'password': password};
     var response = await http.post(url, body: json.encode(data));
     var message = jsonDecode(response.body);
-    if (message == 'Login Matched') {
+    if (message) {
       setState(() {
         isBusy = false;
       });

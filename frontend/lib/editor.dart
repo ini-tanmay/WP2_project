@@ -14,9 +14,7 @@ class EditorPage extends StatefulWidget {
 }
 
 class _EditorPageState extends State<EditorPage> {
-  TextStyle _textStyle = GoogleFonts.bilbo(fontSize: 33);
   String _text = 'Sample Text';
-  TextAlign _textAlign = TextAlign.center;
 
   addTextToDb() {}
 
@@ -37,12 +35,10 @@ class _EditorPageState extends State<EditorPage> {
               ),
             ),
             middle: Text('Edit Draft'),
-            trailing: Row(children: [
-              IconButton(
-                icon: Icon(Icons.save),
-                onPressed: () {},
-              ),
-            ]),
+            trailing: CupertinoButton(
+              child: Icon(Icons.save),
+              onPressed: () {},
+            ),
           ),
           body: Center(
               child: Column(
@@ -72,21 +68,25 @@ class _EditorPageState extends State<EditorPage> {
                         });
                       }, _text),
                     ),
-                    MarkdownWidget(
-                        data: _text.replaceAll('<br>', '\n'),
-                        loadingWidget:
-                            Center(child: Text('Enter in some text!')),
-                        styleConfig: StyleConfig(
-                          pConfig: PConfig(
-                              onLinkTap: (val) async {
-                                if (await canLaunch(val))
-                                  await launch(
-                                    val,
-                                    forceSafariVC: false,
-                                  );
-                              },
-                              textStyle: Theme.of(context).textTheme.headline5),
-                        ))
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: MarkdownWidget(
+                          data: _text.replaceAll('<br>', '\n'),
+                          loadingWidget:
+                              Center(child: Text('Enter in some text!')),
+                          styleConfig: StyleConfig(
+                            pConfig: PConfig(
+                                onLinkTap: (val) async {
+                                  if (await canLaunch(val))
+                                    await launch(
+                                      val,
+                                      forceSafariVC: false,
+                                    );
+                                },
+                                textStyle:
+                                    Theme.of(context).textTheme.headline5),
+                          )),
+                    )
                   ],
                 ),
               ),
