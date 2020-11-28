@@ -93,7 +93,7 @@ class _DraftsPageState extends State<DraftsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      draft.text.substring(0, min(12, draft.text.length)),
+                      draft.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style:
@@ -104,7 +104,7 @@ class _DraftsPageState extends State<DraftsPage> {
                     ),
                     Text(
                       draft.text,
-                      style: GoogleFonts.montserrat(fontSize: 22),
+                      style: GoogleFonts.montserrat(fontSize: 16),
                       maxLines: 5,
                       overflow: TextOverflow.ellipsis,
                     ),

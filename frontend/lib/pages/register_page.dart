@@ -69,8 +69,8 @@ class RegisterPageState extends State {
               children: <Widget>[
                 Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text('User Registration Form',
-                        style: TextStyle(fontSize: 21))),
+                    child:
+                        Text('Registration', style: TextStyle(fontSize: 21))),
                 Divider(),
                 Container(
                     width: 280,

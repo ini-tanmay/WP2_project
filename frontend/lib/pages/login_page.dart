@@ -69,8 +69,7 @@ class LoginPageState extends State {
               children: <Widget>[
                 Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text('User Login Form',
-                        style: TextStyle(fontSize: 21))),
+                    child: Text('Login', style: TextStyle(fontSize: 21))),
                 Divider(),
                 Container(
                     width: 280,

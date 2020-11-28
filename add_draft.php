@@ -10,7 +10,7 @@ $title = $obj['title'];
 $timeStamp = $obj['timeStamp'];
 $uid = $obj['userID'];
 
-//insert new user
+//insert new draft
 $document=array(
    "text"=>$text,
    "userID"=>$uid,

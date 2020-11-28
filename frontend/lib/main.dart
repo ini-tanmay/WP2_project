@@ -14,14 +14,14 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         builder: (context, widget) => ResponsiveWrapper.builder(
               BouncingScrollWrapper.builder(context, widget),
-              maxWidth: 1200,
+              maxWidth: 1400,
               minWidth: 450,
               defaultScale: true,
               breakpoints: [
                 ResponsiveBreakpoint.resize(450, name: MOBILE),
                 ResponsiveBreakpoint.autoScale(800, name: TABLET),
-                ResponsiveBreakpoint.autoScale(1000, name: TABLET),
-                ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+                // ResponsiveBreakpoint.autoScale(1000, name: TABLET),
+                ResponsiveBreakpoint.resize(1800, name: DESKTOP),
                 ResponsiveBreakpoint.autoScale(2460, name: "4K"),
               ],
             ),
