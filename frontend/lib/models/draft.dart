@@ -1,12 +1,10 @@
 class Draft {
   String userID;
-  String id;
   String text;
   String title;
   DateTime timeStamp;
 
   Draft({
-    this.id,
     this.userID,
     this.text,
     this.title,
@@ -25,7 +23,6 @@ class Draft {
   factory Draft.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     return Draft(
-      id: map['_id'],
       userID: map['userID'],
       title: map['title'],
       text: map['text'],

@@ -19,5 +19,4 @@ $document=array(
 );
 $insert_data->insert($document);
 $insertResult=$client->executeBulkWrite('wp.drafts',$insert_data);	
-
 ?>

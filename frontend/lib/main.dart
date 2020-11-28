@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/register_page.dart';
+import 'package:frontend/pages/register_page.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

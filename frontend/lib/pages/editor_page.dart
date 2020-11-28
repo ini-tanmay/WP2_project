@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/draft.dart';
-import 'package:frontend/drafts_page.dart';
-import 'package:frontend/login_page.dart';
+import 'package:frontend/download.dart';
+import 'package:frontend/models/draft.dart';
+import 'package:frontend/pages/drafts_page.dart';
+import 'package:frontend/pages/login_page.dart';
 import 'package:markdown_editable_textinput/markdown_text_input.dart';
 import 'package:markdown_widget/markdown_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -48,23 +49,26 @@ class _EditorPageState extends State<EditorPage> {
       length: 2,
       child: Scaffold(
           drawer: buildDrawer(context),
-          appBar: CupertinoNavigationBar(
-            leading: Builder(
-              builder: (newContext) => CupertinoButton(
+          appBar: AppBar(
+            elevation: 0,
+            centerTitle: true,
+            title: Text('Edit Draft - ' + title),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.file_download),
                 onPressed: () {
-                  Scaffold.of(newContext).openDrawer();
+                  List bytes = _text.codeUnits;
+                  download(bytes, downloadName: title + '.txt');
                 },
-                child: Icon(Icons.menu),
               ),
-            ),
-            middle: Text('Edit Draft - ' + title),
-            trailing: CupertinoButton(
-              child: Icon(Icons.save),
-              onPressed: () async {
-                await showTextInputDialog();
-                await addDraftToDb();
-              },
-            ),
+              IconButton(
+                icon: Icon(Icons.save),
+                onPressed: () async {
+                  await showTextInputDialog();
+                  await addDraftToDb();
+                },
+              ),
+            ],
           ),
           body: Center(
               child: Column(

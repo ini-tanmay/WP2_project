@@ -1,30 +1,29 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:frontend/login_page.dart';
-import 'package:http/http.dart' as http;
-import 'editor_page.dart';
 import 'dart:convert';
 
-class RegisterPage extends StatefulWidget {
-  RegisterPageState createState() => RegisterPageState();
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:frontend/pages/editor_page.dart';
+import 'register_page.dart';
+import 'package:http/http.dart' as http;
+
+class LoginPage extends StatefulWidget {
+  LoginPageState createState() => LoginPageState();
 }
 
-class RegisterPageState extends State {
+class LoginPageState extends State {
   bool isBusy = false;
-  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  Future<bool> userRegistration() async {
+  Future userLogin() async {
     setState(() {
       isBusy = true;
     });
-    String name = nameController.text;
     String email = emailController.text;
     String password = passwordController.text;
-    var url = 'http://localhost:8080/WP2_project/register.php';
-    var data = {'name': name, 'email': email, 'password': password};
-    http.Response response = await http.post(url, body: json.encode(data));
+    var url = 'http://localhost:8080/WP2_project/login.php';
+    var data = {'email': email, 'password': password};
+    var response = await http.post(url, body: json.encode(data));
     var message = jsonDecode(response.body);
     if (response.statusCode == 200) {
       setState(() {
@@ -36,8 +35,8 @@ class RegisterPageState extends State {
           builder: (BuildContext context) {
             return AlertDialog(
               title: new Text('Authentication Failed'),
-              content:
-                  Text('This email is already in use, please try again later'),
+              content: Text(
+                  'Please check if your email address and/or password are correct'),
               actions: <Widget>[
                 FlatButton(
                   child: new Text("Confirm"),
@@ -62,29 +61,17 @@ class RegisterPageState extends State {
         appBar: CupertinoNavigationBar(
           middle: Text('TextEdit'),
         ),
-        body: Center(
+        body: SingleChildScrollView(
+            child: Center(
           child: Form(
             key: _formKey,
             child: Column(
               children: <Widget>[
                 Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text('User Registration Form',
+                    child: Text('User Login Form',
                         style: TextStyle(fontSize: 21))),
                 Divider(),
-                Container(
-                    width: 280,
-                    padding: EdgeInsets.all(10.0),
-                    child: TextFormField(
-                      validator: (val) {
-                        if (val.isEmpty) return 'Name cannot be empty';
-                        return null;
-                      },
-                      controller: nameController,
-                      autocorrect: false,
-                      autofillHints: [AutofillHints.name],
-                      decoration: InputDecoration(hintText: 'Name'),
-                    )),
                 Container(
                     width: 280,
                     padding: EdgeInsets.all(10.0),
@@ -94,9 +81,9 @@ class RegisterPageState extends State {
                         return null;
                       },
                       controller: emailController,
-                      autofillHints: [AutofillHints.email],
-                      autocorrect: false,
-                      decoration: InputDecoration(hintText: 'Email'),
+                      autocorrect: true,
+                      decoration:
+                          InputDecoration(hintText: 'Enter Your Email Here'),
                     )),
                 Container(
                     width: 280,
@@ -108,36 +95,34 @@ class RegisterPageState extends State {
                         return null;
                       },
                       controller: passwordController,
-                      autocorrect: false,
-                      autofillHints: [AutofillHints.password],
+                      autocorrect: true,
                       obscureText: true,
-                      decoration: InputDecoration(hintText: 'Password'),
+                      decoration:
+                          InputDecoration(hintText: 'Enter Your Password Here'),
                     )),
                 RaisedButton(
                   onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      var isValid = await userRegistration();
-                      if (isValid)
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) =>
-                                    EditorPage(emailController.text.trim())));
-                    }
+                    var isValid = await userLogin();
+                    if (isValid)
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) =>
+                                  EditorPage(emailController.text.trim())));
                   },
                   color: Colors.green,
                   textColor: Colors.white,
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: Text('Sign Up'),
+                  padding: EdgeInsets.fromLTRB(9, 9, 9, 9),
+                  child: Text('Sign In'),
                 ),
                 CupertinoButton(
                     onPressed: () {
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
-                              builder: (context) => LoginPage()));
+                              builder: (context) => RegisterPage()));
                     },
-                    child: Text('Got an account already?')),
+                    child: Text('Create an account')),
                 Visibility(
                     visible: isBusy,
                     child: Container(
@@ -146,6 +131,6 @@ class RegisterPageState extends State {
               ],
             ),
           ),
-        ));
+        )));
   }
 }

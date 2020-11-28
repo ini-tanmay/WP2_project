@@ -23,18 +23,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: 0.12.0
+  http: 
   intl:
-  enhanced_future_builder:
   google_fonts:
   # flutter_markdown:
   url_launcher: ^5.1.4
   url_launcher_web: ^0.1.0
-  undo: 1.1.0
+  # undo: 1.1.0
   markdown_widget:
-  text_editor:
   markdown_editable_textinput:
-  unsplash_client:
   responsive_framework:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
